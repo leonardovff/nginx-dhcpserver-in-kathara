@@ -1,0 +1,64 @@
+# stop apache2
+/etc/init.d/apache2 stop
+
+## setting interface ip
+ifconfig eth0 10.5.5.31/24
+ip route add default via 10.5.5.1
+
+## add dns resolv
+echo 'nameserver 8.8.8.8' > '/etc/resolv.conf'
+
+## enable daemon log
+echo "enabling system log"
+/etc/init.d/rsyslog start 
+
+
+echo "Installing nginx"
+## add nginx repository
+echo "deb http://nginx.org/packages/mainline/OS/ focal nginx" >> /etc/apt/sources.list.d/nginx.list
+echo "deb-src http://nginx.org/packages/mainline/OS/ focal nginx" >> /etc/apt/sources.list.d/nginx.list
+
+## add key of nginx repository
+wget http://nginx.org/keys/nginx_signing.key
+apt-key add nginx_signing.key
+
+## install nginx
+echo "Installing nginx"
+apt-get update
+apt-get install -y nginx
+service nginx start
+
+## nginx settings
+echo 'Settings nginx'
+
+### add app and log folders
+mkdir -p /var/www/nginx/arquivos
+echo "olá" >> /var/www/nginx/index.html
+touch /var/www/nginx/arquivos/public.key
+mkdir -p /var/www/nginx/secret
+touch /var/www/nginx/secret/secret.key
+mkdir -p /hosthome/log/nginx/
+
+### generate password file
+htpasswd -b -c /etc/nginx/.htpasswd lsor 123321
+
+### setting the /etc/nginx/conf.d/default.conf
+echo 'server {
+    listen       81;
+    server_name localhost;
+    access_log  /hosthome/log/nginx/host.access.log;
+    error_log  /hosthome/log/nginx/host.error.log;
+    root /var/www/nginx;
+
+    location /secret/ {
+        autoindex on;
+        auth_basic "LVFF Private Area";
+        auth_basic_user_file /etc/nginx/.htpasswd; 
+        index  index.html index.htm;
+    } 
+    location /arquivos/ {
+        autoindex on;
+    }
+}' > /etc/nginx/conf.d/default.conf
+
+nginx -s reload
