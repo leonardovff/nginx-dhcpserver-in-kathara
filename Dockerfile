@@ -9,11 +9,15 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
         curl \
         git \
         libssl-dev \
-        rsyslog \ 
-        wget \
-    && rm -rf /var/lib/apt/lists/*
+        wget
 
-RUN apt-get install net-tools -y
+RUN apt-get update -y && apt-get install -y rsyslog \
+        isc-dhcp-server \
+        isc-dhcp-client \
+        traceroute
+
+RUN rm -rf /var/lib/apt/lists/*
+RUN ls /etc/init.d/
 
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 18.14.2

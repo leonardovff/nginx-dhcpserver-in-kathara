@@ -1,6 +1,6 @@
 ## enable daemon log
-echo "enabling system log"
-/etc/init.d/rsyslog start 
+# echo "enabling system log"
+# /etc/init.d/rsyslog start 
 
 ## setting interface ip
 ifconfig eth0 10.5.5.1/24
