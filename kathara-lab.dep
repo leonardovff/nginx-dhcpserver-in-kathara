@@ -1,1 +1,2 @@
-pc1: dhcpserver
+napc1: narouter
+napc2: narouter
