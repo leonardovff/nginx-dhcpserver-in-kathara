@@ -4,7 +4,7 @@
 
 ## setting interface ip
 ifconfig eth0 10.5.5.1/24
-# echo 1 > /proc/sys/net/ipv4/ip_forward
+#echo 1 > /proc/sys/net/ipv4/ip_forward
 
 ## settings dhcp
 echo "# The ddns-updates-style parameter controls whether or not the server will
